@@ -20,7 +20,6 @@ sed -i -e "s/PORT/$psqlport/g" /home/git/gitlab/config/database.yml
 sed -i -e "s/127.0.0.1/0.0.0.0/g" /home/git/gitlab/config/unicorn.rb
 
 sed -i -e "s/localhost/$githost/g" /home/git/gitlab/config/gitlab.yml
-echo -e "127.0.0.1\t$githost" > /etc/hosts
 
 # Link data directories to /srv/gitlab/data
 rm -R /home/git/gitlab/tmp
