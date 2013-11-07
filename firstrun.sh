@@ -19,6 +19,9 @@ sed -i -e "s/PORT/$psqlport/g" /home/git/gitlab/config/database.yml
 
 sed -i -e "s/127.0.0.1/0.0.0.0/g" /home/git/gitlab/config/unicorn.rb
 
+sed -i -e "s/localhost/$githost/g" /home/git/gitlab/config/gitlab.yml
+echo -e "127.0.0.1\t$githost" > /etc/hosts
+
 # Link data directories to /srv/gitlab/data
 rm -R /home/git/gitlab/tmp
 ln -s /srv/gitlab/data/tmp /home/git/gitlab/tmp
@@ -31,16 +34,19 @@ chown -R git:git /srv/gitlab/data/ssh
 chmod -R 0700 /srv/gitlab/data/ssh
 chmod 0700 /home/git/.ssh
 
+# Change repo path in gitlab-shell config
+sed -i -e 's#/home/git/repositories#/srv/gitlab/data/repositories#g' /home/git/gitlab-shell/config.yml
+sed -i -e 's#/home/git/gitlab-satellites#/srv/gitlab/data/gitlab-satellites#g' /home/git/gitlab-shell/config.yml
+
 chown -R git:git /srv/gitlab/data/gitlab-satellites
+chmod -R ug+rwX,o-rwx /srv/gitlab/data/gitlab-satellites
+chmod -R ug-s /srv/gitlab/data/gitlab-satellites
 
 chown -R git:git /srv/gitlab/data/repositories
 chmod -R ug+rwX,o-rwx /srv/gitlab/data/repositories
-chmod -R ug-s /srv/gitlab/data/repositories/
+chmod -R ug-s /srv/gitlab/data/repositories
 
 find /srv/gitlab/data/repositories/ -type d -print0 | xargs -0 chmod g+s
-
-# Change repo path in gitlab-shell config
-sed -i -e 's/\/home\/git\/repositories/\/srv\/gitlab\/data\/repositories/g' /home/git/gitlab-shell/config.yml
 
 # ==============================================
 # === Delete this section if restoring data from previous build ===
