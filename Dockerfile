@@ -23,6 +23,9 @@ RUN  echo udev hold | dpkg --set-selections;\
 # Install dependencies
 RUN apt-get install -y build-essential zlib1g-dev libyaml-dev libssl-dev libgdbm-dev libreadline-dev libncurses5-dev libffi-dev curl git-core openssh-server redis-server checkinstall libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev logrotate libpq-dev sudo git 
 
+RUN echo "install: --no-rdoc --no-ri" > /etc/gemrc;\
+  echo "update: --no-rdoc --no-ri " >> /etc/gemrc
+
 # Install Ruby
 RUN mkdir /tmp/ruby;\
   cd /tmp/ruby;\
@@ -32,7 +35,7 @@ RUN mkdir /tmp/ruby;\
   ./configure;\
   make;\
   make install;\
-  gem install bundler --no-ri --no-rdoc
+  gem install bundler
 
 # Create Git user
 RUN adduser --disabled-login --gecos 'GitLab' git
