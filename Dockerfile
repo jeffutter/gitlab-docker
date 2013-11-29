@@ -44,7 +44,7 @@ RUN adduser --disabled-login --gecos 'GitLab' git
 RUN cd /home/git;\
   su git -c "git clone https://github.com/gitlabhq/gitlab-shell.git";\
   cd gitlab-shell;\
-  su git -c "git checkout v1.7.4";\
+  su git -c "git checkout v1.7.9";\
   su git -c "cp config.yml.example config.yml";\
   sed -i -e 's/localhost/127.0.0.1:8080/g' config.yml;\
   su git -c "./bin/install"
@@ -53,7 +53,7 @@ RUN cd /home/git;\
 RUN cd /home/git;\
   su git -c "git clone https://github.com/gitlabhq/gitlabhq.git gitlab";\
   cd /home/git/gitlab;\
-  su git -c "git checkout 6-2-stable"
+  su git -c "git checkout 6-3-stable"
 
 # Misc configuration stuff
 RUN cd /home/git/gitlab;\
