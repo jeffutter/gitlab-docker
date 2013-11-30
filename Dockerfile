@@ -83,6 +83,19 @@ RUN cd /home/git/gitlab;\
   gem install charlock_holmes --version '0.6.9.4';\
   su git -c "bundle install --deployment --without development test mysql aws"
 
+RUN cd /home/git/gitlab;\
+  sed -i -e '/config.assets.enabled/a \    config.assets.initialize_on_precompile = false' config/application.rb;\
+  sed -i -e '/config.assets.enabled/a \    config.assets.paths << Modernizr.path' config/application.rb;\
+  cp config/database.yml.postgresql config/database.yml;\
+  chown git:git config/database.yml
+
+RUN cd /home/git/gitlab;\
+  su git -c "bundle exec rake assets:precompile RAILS_ENV=production";\
+  sed -i -e 's/Bundler.require(:default, :assets, Rails.env)/#Bundler.require(:default, :assets, Rails.env)/' config/application.rb;\
+  sed -i -e 's/# Bundler.require.*Rails\.groups/Bundler.require(*Rails.groups/' config/application.rb;\
+  sed -i -e 's/config.assets.paths << Modernizr.path/# config.assets.paths << Modernizr.path/' config/application.rb;\
+  rm config/database.yml
+
 # Install init scripts
 RUN cd /home/git/gitlab;\
   cp lib/support/init.d/gitlab /etc/init.d/gitlab;\
