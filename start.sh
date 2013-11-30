@@ -18,5 +18,5 @@ rm /home/git/gitlab/tmp/pids/*
 service gitlab start
 
 # keep script in foreground
-sleep 5
+sleep 30 
 tail -f /home/git/gitlab/log/production.log
