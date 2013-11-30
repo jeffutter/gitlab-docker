@@ -18,5 +18,6 @@ rm /home/git/gitlab/tmp/pids/*
 service gitlab start
 
 # keep script in foreground
-sleep 30 
+touch /home/git/gitlab/log/production.log
+chown git:git /home/git/gitlab/log/production.log
 tail -f /home/git/gitlab/log/production.log
