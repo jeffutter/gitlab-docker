@@ -21,7 +21,7 @@ RUN  echo udev hold | dpkg --set-selections;\
   apt-get -y upgrade
 
 # Install dependencies
-RUN apt-get install -y build-essential zlib1g-dev libyaml-dev libssl-dev libgdbm-dev libreadline-dev libncurses5-dev libffi-dev curl git-core openssh-server redis-server checkinstall libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev logrotate libpq-dev sudo git 
+RUN apt-get install -y build-essential zlib1g-dev libyaml-dev libssl-dev libgdbm-dev libreadline-dev libncurses5-dev libffi-dev curl git-core openssh-server redis-server checkinstall libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev logrotate libpq-dev sudo git openssl 
 
 RUN echo "install: --no-rdoc --no-ri" > /etc/gemrc;\
   echo "update: --no-rdoc --no-ri " >> /etc/gemrc
@@ -32,7 +32,7 @@ RUN mkdir /tmp/ruby;\
   curl ftp://ftp.ruby-lang.org/pub/ruby/2.0/ruby-2.0.0-p353.tar.gz | tar xz;\
   cd ruby-2.0.0-p353;\
   chmod +x configure;\
-  ./configure;\
+  ./configure --disable-install-doc;\
   make;\
   make install;\
   gem install bundler
