@@ -29,8 +29,8 @@ RUN echo "install: --no-rdoc --no-ri" > /etc/gemrc;\
 # Install Ruby
 RUN mkdir /tmp/ruby;\
   cd /tmp/ruby;\
-  curl ftp://ftp.ruby-lang.org/pub/ruby/2.0/ruby-2.0.0-p353.tar.gz | tar xz;\
-  cd ruby-2.0.0-p353;\
+  curl ftp://ftp.ruby-lang.org/pub/ruby/2.1/ruby-2.1.0.tar.gz | tar xz;\
+  cd ruby-2.1.0;\
   chmod +x configure;\
   ./configure --disable-install-doc;\
   make;\
@@ -44,7 +44,7 @@ RUN adduser --disabled-login --gecos 'GitLab' git
 RUN cd /home/git;\
   su git -c "git clone https://github.com/gitlabhq/gitlab-shell.git";\
   cd gitlab-shell;\
-  su git -c "git checkout v1.7.9";\
+  su git -c "git checkout v1.8.0";\
   su git -c "cp config.yml.example config.yml";\
   sed -i -e 's/localhost/127.0.0.1:8080/g' config.yml;\
   su git -c "./bin/install"
@@ -53,7 +53,7 @@ RUN cd /home/git;\
 RUN cd /home/git;\
   su git -c "git clone https://github.com/gitlabhq/gitlabhq.git gitlab";\
   cd /home/git/gitlab;\
-  su git -c "git checkout 6-3-stable"
+  su git -c "git checkout 6-4-stable"
 
 # Misc configuration stuff
 RUN cd /home/git/gitlab;\
@@ -79,8 +79,8 @@ RUN cd /home/git/gitlab;\
 #RUN cd /home/git/gitlab;\
 #  sed -i -e 's/\$@/-c 5 \$@/g' script/background_jobs
 
+#  gem install charlock_holmes --version '0.6.9.4';\
 RUN cd /home/git/gitlab;\
-  gem install charlock_holmes --version '0.6.9.4';\
   su git -c "bundle install --deployment --without development test mysql aws"
 
 # Install init scripts
