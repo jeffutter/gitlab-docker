@@ -79,9 +79,10 @@ RUN cd /home/git/gitlab;\
 #RUN cd /home/git/gitlab;\
 #  sed -i -e 's/\$@/-c 5 \$@/g' script/background_jobs
 
-#  gem install charlock_holmes --version '0.6.9.4';\
 RUN cd /home/git/gitlab;\
-  su git -c "bundle install --deployment --without development test mysql aws"
+  gem install charlock_holmes --version '0.6.9.4';\
+  su git -c "bundle install --deployment --without development test mysql aws";\
+  bundle install --deployment --without development test mysql aws
 
 # Install init scripts
 RUN cd /home/git/gitlab;\
