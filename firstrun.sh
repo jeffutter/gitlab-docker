@@ -14,8 +14,8 @@ chown git:git /home/git/gitlab/config/database.yml
 chmod o-rwx /home/git/gitlab/config/database.yml
 
 sed -i -e "s/PASSWORD/$psqlpass/g" /home/git/gitlab/config/database.yml
-sed -i -e "s/HOSTNAME/$psqlhost/g" /home/git/gitlab/config/database.yml
-sed -i -e "s/PORT/$psqlport/g" /home/git/gitlab/config/database.yml
+sed -i -e "s/HOSTNAME/${POSTGRESQL_PORT_5432_TCP_ADDR}/g" /home/git/gitlab/config/database.yml
+sed -i -e "s/PORT/${POSTGRESQL_PORT_5432_TCP_PORT}/g" /home/git/gitlab/config/database.yml
 
 sed -i -e "s/127.0.0.1/0.0.0.0/g" /home/git/gitlab/config/unicorn.rb
 
