@@ -9,6 +9,8 @@ RUN apt-get update; apt-get -y install lsb-release python-software-properties
 
 # Add Sources
 RUN add-apt-repository -y ppa:git-core/ppa;\
+  apt-add-repository -y ppa:brightbox/ruby-ng;\
+  apt-add-repository -y ppa:chris-lea/node.js;\
   echo deb http://us.archive.ubuntu.com/ubuntu/ $(lsb_release -cs) universe multiverse >> /etc/apt/sources.list;\
   echo deb http://us.archive.ubuntu.com/ubuntu/ $(lsb_release -cs)-updates main restricted universe >> /etc/apt/sources.list;\
   echo deb http://security.ubuntu.com/ubuntu $(lsb_release -cs)-security main restricted universe >> /etc/apt/sources.list
@@ -17,25 +19,16 @@ RUN add-apt-repository -y ppa:git-core/ppa;\
 RUN  echo udev hold | dpkg --set-selections;\
   echo initscripts hold | dpkg --set-selections;\
   echo upstart hold | dpkg --set-selections;\
-  apt-get update;\
-  apt-get -y upgrade
+  apt-get update
 
 # Install dependencies
-RUN apt-get install -y build-essential zlib1g-dev libyaml-dev libssl-dev libgdbm-dev libreadline-dev libncurses5-dev libffi-dev curl git-core openssh-server redis-server checkinstall libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev logrotate libpq-dev sudo git openssl 
+RUN apt-get install -y ruby2.1 ruby2.1-dev make git-core openssh-server redis-server checkinstall libxml2-dev libxslt-dev libicu-dev logrotate libpq-dev sudo git openssl nodejs
 
 RUN echo "install: --no-rdoc --no-ri" > /etc/gemrc;\
   echo "update: --no-rdoc --no-ri " >> /etc/gemrc
 
-# Install Ruby
-RUN mkdir /tmp/ruby;\
-  cd /tmp/ruby;\
-  curl ftp://ftp.ruby-lang.org/pub/ruby/2.1/ruby-2.1.0.tar.gz | tar xz;\
-  cd ruby-2.1.0;\
-  chmod +x configure;\
-  ./configure --disable-install-doc;\
-  make;\
-  make install;\
-  gem install bundler
+# Install bundler
+RUN gem install bundler
 
 # Create Git user
 RUN adduser --disabled-login --gecos 'GitLab' git

@@ -57,5 +57,3 @@ find /srv/gitlab/data/repositories/ -type d -print0 | xargs -0 chmod g+s
 
 # ================================================================
 
-# Delete firstrun script
-#rm /srv/gitlab/firstrun.sh
