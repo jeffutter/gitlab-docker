@@ -61,7 +61,7 @@ RUN cd /home/git/gitlab;\
   su git -c "mkdir public/uploads";\
   chmod -R u+rwX public/uploads;\
   su git -c "cp config/unicorn.rb.example config/unicorn.rb";\
-  su git -c 'sed -ie "s/127.0.0.1:8080/0.0.0.0:80/g" config/unicorn.rb';\
+  su git -c 'sed -ie "s/127.0.0.1:8080/0.0.0.0:8080/g" config/unicorn.rb';\
   su git -c "cp config/initializers/rack_attack.rb.example config/initializers/rack_attack.rb";\
   su git -c 'sed -ie "s/# config.middleware.use Rack::Attack/config.middleware.use Rack::Attack/" config/application.rb';\
   su git -c "git config --global user.name 'GitLab'";\
