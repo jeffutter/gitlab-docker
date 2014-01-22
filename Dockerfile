@@ -64,7 +64,6 @@ RUN cd /home/git/gitlab;\
   su git -c 'sed -ie "s/127.0.0.1/0.0.0.0/g" config/unicorn.rb';\
   su git -c "cp config/initializers/rack_attack.rb.example config/initializers/rack_attack.rb";\
   su git -c 'sed -ie "s/# config.middleware.use Rack::Attack/config.middleware.use Rack::Attack/" config/application.rb';\
-  su git -c 'sed -i "/config.assets/a config.assets.initialize_on_precompile=false" config/application.rb';\
   su git -c "git config --global user.name 'GitLab'";\
   su git -c "git config --global user.email 'gitlab@localhost'";\
   su git -c "git config --global core.autocrlf input"
