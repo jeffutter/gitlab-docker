@@ -34,6 +34,17 @@ chmod -R ug-s /srv/gitlab/data/repositories
 
 find /srv/gitlab/data/repositories/ -type d -print0 | xargs -0 chmod g+s
 
+cat << EOF > /etc/default/gitlab
+export POSTGRESQL_DATABASE="${POSTGRESQL_DATABASE}"
+export POSTGRESQL_PASSWORD="${POSTGRESQL_PASSWORD}"
+export POSTGRESQL_PORT_5432_TCP_ADDR="${POSTGRESQL_PORT_5432_TCP_ADDR=}"
+export POSTGRESQL_PORT_5432_TCP_PORT="${POSTGRESQL_PORT_5432_TCP_PORT=}"
+export POSTGRESQL_USERNAME="${POSTGRESQL_USERNAME}"
+export GIT_EMAIL_FROM="${GIT_EMAIL_FROM}"
+export GIT_EMAIL_SUPPORT="${GIT_EMAIL_SUPPORT=}"
+export GIT_HOST="${GIT_HOST}"
+EOF
+
 # ==============================================
 # === Delete this section if restoring data from previous build ===
 
