@@ -34,11 +34,6 @@ chmod -R ug-s /srv/gitlab/data/repositories
 
 find /srv/gitlab/data/repositories/ -type d -print0 | xargs -0 chmod g+s
 
-#Precompile Assets
-cd /home/git/gitlab
-sudo -u git -H -E bundle exec rake assets:clean RAILS_ENV=production
-sudo -u git -H -E bundle exec rake assets:precompile RAILS_ENV=production
-
 #Dump needed env vars to startup script
 cat << EOF > /etc/default/gitlab
 export POSTGRESQL_DATABASE="${POSTGRESQL_DATABASE}"

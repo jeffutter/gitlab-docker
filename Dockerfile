@@ -64,18 +64,30 @@ RUN cd /home/git/gitlab;\
   su git -c 'sed -ie "s/127.0.0.1/0.0.0.0/g" config/unicorn.rb';\
   su git -c "cp config/initializers/rack_attack.rb.example config/initializers/rack_attack.rb";\
   su git -c 'sed -ie "s/# config.middleware.use Rack::Attack/config.middleware.use Rack::Attack/" config/application.rb';\
+  su git -c 'sed -i "/config.assets/a config.assets.initialize_on_precompile=false" config/application.rb';\
   su git -c "git config --global user.name 'GitLab'";\
   su git -c "git config --global user.email 'gitlab@localhost'";\
   su git -c "git config --global core.autocrlf input"
 
 # Limit the number of sidekiq background jobs
-#RUN cd /home/git/gitlab;\
-#  sed -i -e 's/\$@/-c 5 \$@/g' script/background_jobs
+RUN cd /home/git/gitlab;\
+  sed -i -e 's/\$@/-c 5 \$@/g' script/background_jobs
 
 RUN cd /home/git/gitlab;\
   gem install charlock_holmes --version '0.6.9.4';\
   su git -c "bundle install --deployment --without development test mysql aws";\
   bundle install --deployment --without development test mysql aws
+
+#Precompile assets, hack workaround because acts_as_taggable tries to initialize database connection
+RUN cd /home/git/gitlab;\
+  cp config/database.yml.postgresql config/database.yml ;\
+  cp config/gitlab.yml.example config/gitlab.yml ;\
+  sed -ie "/acts_as_taggable_on/d" app/models/issue.rb ;\
+  sed -ie "/acts_as_taggable_on/d" app/models/project.rb ;\
+  su git -c "bundle exec rake assets:clean RAILS_ENV=production";\
+  su git -c "bundle exec rake assets:precompile RAILS_ENV=production";\
+  su git -c "git checkout app/models/issue.rb" ;\
+  su git -c "git checkout app/models/project.rb"
 
 # Install init scripts
 RUN cd /home/git/gitlab;\
@@ -86,7 +98,7 @@ RUN cd /home/git/gitlab;\
 RUN cd /home/git/gitlab;\
   cp lib/support/logrotate/gitlab /etc/logrotate.d/gitlab
 
-EXPOSE 80
+EXPOSE 8080
 EXPOSE 22
 
 ADD gitlab/database.yml /home/git/gitlab/config/database.yml
