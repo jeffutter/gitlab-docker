@@ -93,8 +93,7 @@ ADD gitlab/database.yml /home/git/gitlab/config/database.yml
 ADD gitlab/gitlab.yml /home/git/gitlab/config/gitlab.yml
 ADD gitlab-shell/config.yml /home/git/gitlab-shell/config.yml
 RUN chown git:git /home/git/gitlab/config/database.yml /home/git/gitlab/config/gitlab.yml /home/git/gitlab-shell/config.yml
-ADD . /srv/gitlab
+ADD start.sh /start.sh
+RUN chmod +x /start.sh
 
-RUN chmod +x /srv/gitlab/start.sh
-
-CMD ["/srv/gitlab/start.sh"]
+CMD ["/start.sh"]
