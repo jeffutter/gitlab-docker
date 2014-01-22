@@ -39,7 +39,6 @@ RUN cd /home/git;\
   cd gitlab-shell;\
   su git -c "git checkout v1.8.0";\
   su git -c "cp config.yml.example config.yml";\
-  sed -i -e 's/localhost/127.0.0.1:8080/g' config.yml;\
   su git -c "./bin/install"
 
 # Install GitLab
@@ -62,6 +61,7 @@ RUN cd /home/git/gitlab;\
   su git -c "mkdir public/uploads";\
   chmod -R u+rwX public/uploads;\
   su git -c "cp config/unicorn.rb.example config/unicorn.rb";\
+  su git -c 'sed -ie "s/127.0.0.1/0.0.0.0/g" config/unicorn.rb';\
   su git -c "cp config/initializers/rack_attack.rb.example config/initializers/rack_attack.rb";\
   su git -c 'sed -ie "s/# config.middleware.use Rack::Attack/config.middleware.use Rack::Attack/" config/application.rb';\
   su git -c "git config --global user.name 'GitLab'";\
@@ -86,12 +86,15 @@ RUN cd /home/git/gitlab;\
 RUN cd /home/git/gitlab;\
   cp lib/support/logrotate/gitlab /etc/logrotate.d/gitlab
 
-EXPOSE 8080
+EXPOSE 80
 EXPOSE 22
 
+ADD gitlab/database.yml /home/git/gitlab/config/database.yml
+ADD gitlab/gitlab.yml /home/git/gitlab/config/gitlab.yml
+ADD gitlab-shell/config.yml /home/git/gitlab-shell/config.yml
+RUN chown git:git /home/git/gitlab/config/database.yml /home/git/gitlab/config/gitlab.yml /home/git/gitlab-shell/config.yml
 ADD . /srv/gitlab
 
-RUN chmod +x /srv/gitlab/start.sh;\
-  chmod +x /srv/gitlab/firstrun.sh
+RUN chmod +x /srv/gitlab/start.sh
 
 CMD ["/srv/gitlab/start.sh"]
