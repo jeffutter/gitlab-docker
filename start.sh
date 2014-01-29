@@ -6,6 +6,7 @@ mkdir -p /var/run/sshd
 
 # start redis
 redis-server > /dev/null 2>&1 &
+service nginx start
 sleep 5
 
 # Regenerate the SSH host key

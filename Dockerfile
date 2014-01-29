@@ -5,7 +5,7 @@ ENV DEBIAN_FRONTEND noninteractive
 RUN dpkg-divert --local --rename --add /sbin/initctl
 RUN ln -s /bin/true /sbin/initctl
 
-RUN apt-get update; apt-get -y install lsb-release python-software-properties
+RUN apt-get update; apt-get -y -q install lsb-release python-software-properties
 
 # Add Sources
 RUN add-apt-repository -y ppa:git-core/ppa;\
@@ -22,10 +22,11 @@ RUN  echo udev hold | dpkg --set-selections;\
   apt-get update
 
 # Install dependencies
-RUN apt-get install -y ruby2.1 ruby2.1-dev make git-core openssh-server redis-server checkinstall libxml2-dev libxslt-dev libicu-dev logrotate libpq-dev sudo git openssl nodejs
+RUN apt-get install -y -q nginx ruby2.1 ruby2.1-dev ruby-switch make git-core openssh-server redis-server checkinstall libxml2-dev libxslt-dev libicu-dev logrotate libpq-dev sudo git openssl nodejs
 
 RUN echo "install: --no-rdoc --no-ri" > /etc/gemrc;\
-  echo "update: --no-rdoc --no-ri " >> /etc/gemrc
+  echo "update: --no-rdoc --no-ri " >> /etc/gemrc;\
+  ruby-switch --set ruby2.1
 
 # Install bundler
 RUN gem install bundler
@@ -74,8 +75,7 @@ RUN cd /home/git/gitlab;\
 
 RUN cd /home/git/gitlab;\
   gem install charlock_holmes --version '0.6.9.4';\
-  su git -c "bundle install --deployment --without development test mysql aws";\
-  bundle install --deployment --without development test mysql aws
+  su git -c "bundle install --deployment --without development test mysql aws"
 
 #Precompile assets, hack workaround because acts_as_taggable tries to initialize database connection
 RUN cd /home/git/gitlab;\
@@ -104,6 +104,7 @@ ADD gitlab/database.yml /home/git/gitlab/config/database.yml
 ADD gitlab/gitlab.yml /home/git/gitlab/config/gitlab.yml
 ADD gitlab-shell/config.yml /home/git/gitlab-shell/config.yml
 RUN chown git:git /home/git/gitlab/config/database.yml /home/git/gitlab/config/gitlab.yml /home/git/gitlab-shell/config.yml
+ADD nginx/nginx.conf /etc/nginx/nginx.conf
 ADD start.sh /start.sh
 RUN chmod +x /start.sh
 
