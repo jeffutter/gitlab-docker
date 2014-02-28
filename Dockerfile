@@ -3,7 +3,6 @@ FROM ubuntu
 ENV DEBIAN_FRONTEND noninteractive
 
 RUN dpkg-divert --local --rename --add /sbin/initctl
-RUN ln -s /bin/true /sbin/initctl
 
 RUN apt-get update; apt-get -y -q install lsb-release python-software-properties
 
@@ -46,7 +45,7 @@ RUN cd /home/git;\
 RUN cd /home/git;\
   su git -c "git clone https://github.com/gitlabhq/gitlabhq.git gitlab";\
   cd /home/git/gitlab;\
-  su git -c "git checkout 6-5-stable"
+  su git -c "git checkout 6-6-stable"
 
 # Misc configuration stuff
 RUN cd /home/git/gitlab;\
@@ -74,7 +73,6 @@ RUN cd /home/git/gitlab;\
   sed -i -e 's/\$@/-c 5 \$@/g' script/background_jobs
 
 RUN cd /home/git/gitlab;\
-  gem install charlock_holmes --version '0.6.9.4';\
   su git -c "bundle install --deployment --without development test mysql aws"
 
 #Precompile assets, hack workaround because acts_as_taggable tries to initialize database connection
