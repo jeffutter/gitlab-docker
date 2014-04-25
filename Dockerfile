@@ -4,7 +4,7 @@ ENV DEBIAN_FRONTEND noninteractive
 
 RUN dpkg-divert --local --rename --add /sbin/initctl
 
-RUN apt-get update; apt-get -y -q install lsb-release python-software-properties
+RUN apt-get update; apt-get -y -q install lsb-release software-properties-common
 
 # Add Sources
 RUN add-apt-repository -y ppa:git-core/ppa;\
@@ -21,11 +21,10 @@ RUN  echo udev hold | dpkg --set-selections;\
   apt-get update
 
 # Install dependencies
-RUN apt-get install -y -q nginx ruby2.1 ruby2.1-dev ruby-switch make git-core openssh-server redis-server checkinstall libxml2-dev libxslt-dev libicu-dev logrotate libpq-dev sudo git openssl nodejs
+RUN apt-get install -y -q nginx ruby2.1 ruby2.1-dev make git-core openssh-server redis-server checkinstall libxml2-dev libxslt-dev libicu-dev logrotate libpq-dev sudo git openssl nodejs
 
 RUN echo "install: --no-rdoc --no-ri" > /etc/gemrc;\
-  echo "update: --no-rdoc --no-ri " >> /etc/gemrc;\
-  ruby-switch --set ruby2.1
+  echo "update: --no-rdoc --no-ri " >> /etc/gemrc
 
 # Install bundler
 RUN gem install bundler
@@ -37,7 +36,7 @@ RUN adduser --disabled-login --gecos 'GitLab' git
 RUN cd /home/git;\
   su git -c "git clone https://github.com/gitlabhq/gitlab-shell.git";\
   cd gitlab-shell;\
-  su git -c "git checkout v1.9.1";\
+  su git -c "git checkout v1.9.3";\
   su git -c "cp config.yml.example config.yml";\
   su git -c "./bin/install"
 
@@ -45,7 +44,7 @@ RUN cd /home/git;\
 RUN cd /home/git;\
   su git -c "git clone https://github.com/gitlabhq/gitlabhq.git gitlab";\
   cd /home/git/gitlab;\
-  su git -c "git checkout 6-7-stable"
+  su git -c "git checkout 6-8-stable"
 
 # Misc configuration stuff
 RUN cd /home/git/gitlab;\
@@ -94,6 +93,10 @@ RUN cd /home/git/gitlab;\
 
 RUN cd /home/git/gitlab;\
   cp lib/support/logrotate/gitlab /etc/logrotate.d/gitlab
+
+
+# Seems to be needed on ubuntu 14.04
+RUN sed -ie "s/session    required     pam_loginuid.so/#session    required     pam_loginuid.so/" /etc/pam.d/sshd
 
 EXPOSE 80
 EXPOSE 22
