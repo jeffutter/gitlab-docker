@@ -2,8 +2,6 @@ FROM ubuntu
 
 ENV DEBIAN_FRONTEND noninteractive
 
-RUN dpkg-divert --local --rename --add /sbin/initctl
-
 RUN apt-get update; apt-get -y -q install lsb-release software-properties-common
 
 # Add Sources
@@ -36,7 +34,7 @@ RUN adduser --disabled-login --gecos 'GitLab' git
 RUN cd /home/git;\
   su git -c "git clone https://github.com/gitlabhq/gitlab-shell.git";\
   cd gitlab-shell;\
-  su git -c "git checkout v1.9.3";\
+  su git -c "git checkout v1.9.4";\
   su git -c "cp config.yml.example config.yml";\
   su git -c "./bin/install"
 
@@ -44,7 +42,7 @@ RUN cd /home/git;\
 RUN cd /home/git;\
   su git -c "git clone https://github.com/gitlabhq/gitlabhq.git gitlab";\
   cd /home/git/gitlab;\
-  su git -c "git checkout 6-8-stable"
+  su git -c "git checkout 6-9-stable"
 
 # Misc configuration stuff
 RUN cd /home/git/gitlab;\
@@ -80,10 +78,12 @@ RUN cd /home/git/gitlab;\
   cp config/gitlab.yml.example config/gitlab.yml ;\
   sed -ie "/acts_as_taggable_on/d" app/models/issue.rb ;\
   sed -ie "/acts_as_taggable_on/d" app/models/project.rb ;\
+  sed -ie "/acts_as_taggable_on/d" app/models/merge_request.rb ;\
   su git -c "bundle exec rake assets:clean RAILS_ENV=production";\
   su git -c "bundle exec rake assets:precompile RAILS_ENV=production";\
   su git -c "git checkout app/models/issue.rb" ;\
-  su git -c "git checkout app/models/project.rb"
+  su git -c "git checkout app/models/project.rb" ;\
+  su git -c "git checkout app/models/merge_request.rb"
 
 # Install init scripts
 RUN cd /home/git/gitlab;\
