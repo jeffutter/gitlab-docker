@@ -67,7 +67,7 @@ RUN cd /home/git/gitlab;\
 
 # Limit the number of sidekiq background jobs
 RUN cd /home/git/gitlab;\
-  sed -i -e 's/\$@/-c 5 \$@/g' script/background_jobs
+  sed -i -e 's/\$@/-c 5 \$@/g' bin/background_jobs
 
 RUN cd /home/git/gitlab;\
   su git -c "bundle install --deployment --without development test mysql aws"
