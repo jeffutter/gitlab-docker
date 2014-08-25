@@ -42,7 +42,7 @@ RUN cd /home/git;\
 RUN cd /home/git;\
   su git -c "git clone https://github.com/gitlabhq/gitlabhq.git gitlab";\
   cd /home/git/gitlab;\
-  su git -c "git checkout 7-0-stable"
+  su git -c "git checkout 7-1-stable"
 
 # Misc configuration stuff
 RUN cd /home/git/gitlab;\
