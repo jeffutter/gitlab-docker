@@ -19,7 +19,7 @@ RUN  echo udev hold | dpkg --set-selections;\
   apt-get update
 
 # Install dependencies
-RUN apt-get install -y -q nginx ruby2.1 ruby2.1-dev make git-core openssh-server redis-server checkinstall libxml2-dev libxslt-dev libicu-dev logrotate libpq-dev sudo git openssl nodejs
+RUN apt-get install -y -q nginx ruby2.1 ruby2.1-dev make git-core openssh-server redis-server checkinstall libgit2-dev libxml2-dev libxslt-dev libicu-dev logrotate libpq-dev sudo git openssl nodejs
 
 RUN echo "install: --no-rdoc --no-ri" > /etc/gemrc;\
   echo "update: --no-rdoc --no-ri " >> /etc/gemrc
